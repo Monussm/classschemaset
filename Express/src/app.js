@@ -25,6 +25,30 @@ const teacherSchema = new mongoose.Schema({
 });
 const Teacher = mongoose.model('Teacher',teacherSchema);
 
+
+
+
+
+
+
+const classSchema = new mongoose.Schema({
+  name:String,
+  address:String,
+  radio:null
+});
+const Class = mongoose.model('Class',classSchema);
+
+
+
+
+
+
+
+
+
+
+
+
 app.get("/",(req,res)=>{
 
 res.render("index")
@@ -81,7 +105,6 @@ res.render("teachersignup")
 })
 
 app.post("/teachersignup",async(req,res)=>{
-
 const password=req.body.password
 const confirmpassword=req.body.confirmpassword
 if(password===confirmpassword){
@@ -96,9 +119,6 @@ console.log("Not match")
 
 
 }
-
-
-
 
 const teacherinfo = new Teacher({ 
   firstname:req.body.firstname,
@@ -149,6 +169,29 @@ app.post("/teacherforget",async(req,res)=>{
 
 
 
+// classinformation
+app.get("/class1",(req,res)=>{
+
+res.render("class1")
+
+
+})
+
+app.post("/class1",(req,res)=>{
+  const classinfo = new Class({ 
+    name:req.body.name,
+    address:req.body.address,
+    radio:req.body.radio
+  });
+  console.log(classinfo)
+  classinfo.save()
+
+
+
+
+})
+
+
 
 
 
@@ -175,8 +218,31 @@ res.render("adminforget")
 
 })
 
-app.post("/adminlogin",(req,res)=>{
-res.render("adminsignup")
+app.post("/adminlogin",async(req,res)=>{
+  const emailid=req.body.emailid
+  const newpassword=req.body.newpassword
+  const data=await Teacher.findOne({emailid})
+  if(data==null){
+
+    res.send("email id not found")
+
+  }
+  else
+  {
+    if(data.emailid==emailid){
+    const update=await Teacher.findOneAndUpdate({emailid},{$set:{password:newpassword}})
+    console.log(update)
+  
+    }
+    else{
+  
+  
+  res.send("na bhail")
+  
+    }
+  }
+  
+  
 })
 
 
